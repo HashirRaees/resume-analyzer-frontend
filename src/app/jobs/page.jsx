@@ -73,7 +73,7 @@ export default function JobsPage() {
   };
 
   const deleteJob = async (id) => {
-    if (!window.confirm("Are you sure you want this job?")) return;
+    if (!window.confirm("Are you sure you want to delete this job?")) return;
     console.log(id, 'wjkdhajwhdjkwahdjkwhdkjwahdkhwakjhdkjwa');
     try {
       await axiosInstance.delete(`/api/jobs/${id}`);
@@ -88,7 +88,7 @@ export default function JobsPage() {
 
   const startEdit = (job) => {
     setFormData(job);
-    setEditingId(job.id);
+    setEditingId(job._id);
     setShowForm(true);
   };
 

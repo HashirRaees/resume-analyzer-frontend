@@ -4,7 +4,10 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { LiaClipboardListSolid } from "react-icons/lia";
-
+import { GoTrophy } from "react-icons/go";
+import { IoStatsChartOutline } from "react-icons/io5";
+import { FaRegLightbulb } from "react-icons/fa6";
+import { IoSparklesOutline } from "react-icons/io5";
 import Navbar from "@/components/Navbar";
 import axiosInstance from "@/lib/axios";
 import Card from "@/components/ui/Card";
@@ -64,16 +67,16 @@ export default function ResumePage() {
     try {
       console.log("=== Starting Analysis ===");
       console.log("Sending request with text length:", resumeText.length);
-      
+
       const response = await axiosInstance.post("/api/resume/analyze", {
         resumeText: resumeText.trim(),
       });
-      
+
       console.log("=== Response Received ===");
       console.log("Full response:", response);
       console.log("Response data:", response.data);
       console.log("Response data.data:", response.data.data);
-      
+
       if (!response.data.success) {
         throw new Error(response.data.message || "Analysis failed");
       }
@@ -81,26 +84,26 @@ export default function ResumePage() {
       if (!response.data.data) {
         throw new Error("No data received from server");
       }
-      
+
       setResult(response.data.data);
       setResumeText("");
       setActiveTab("results");
-      
+
       // Refresh history
       await fetchResumeHistory();
-      
+
       console.log("=== Analysis Complete ===");
-      
     } catch (err) {
       console.error("=== Analysis Error ===");
       console.error("Full error object:", err);
       console.error("Error response:", err.response);
       console.error("Error response data:", err.response?.data);
-      
-      const errorMessage = err.response?.data?.message 
-        || err.message 
-        || "Failed to analyze resume. Please try again.";
-      
+
+      const errorMessage =
+        err.response?.data?.message ||
+        err.message ||
+        "Failed to analyze resume. Please try again.";
+
       setError(errorMessage);
     } finally {
       setAnalyzing(false);
@@ -110,23 +113,22 @@ export default function ResumePage() {
   const deleteResume = async (id) => {
     try {
       console.log("Deleting resume with ID:", id);
-      
+
       await axiosInstance.delete(`/api/resume/${id}`);
-      
+
       console.log("Delete successful");
-      
+
       // Clear result if it's the one being deleted
       if (result && result._id === id) {
         setResult(null);
         setActiveTab("history");
       }
-      
+
       // Refresh history
       await fetchResumeHistory();
-      
+
       // Clear error
       setError("");
-      
     } catch (err) {
       console.error("Delete error:", err);
       console.error("Error details:", err.response?.data);
@@ -447,7 +449,9 @@ export default function ResumePage() {
                       </h3>
                     </div>
                     <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                      <span className="text-2xl">🏆</span>
+                      <span className="text-2xl">
+                        <GoTrophy />
+                      </span>
                     </div>
                   </div>
                   <div className="mt-6 w-full bg-black/20 rounded-full h-2">
@@ -469,7 +473,9 @@ export default function ResumePage() {
                       </h3>
                     </div>
                     <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                      <span className="text-2xl">🤖</span>
+                      <span className="text-2xl">
+                        <IoStatsChartOutline />
+                      </span>
                     </div>
                   </div>
                   <div className="mt-6 w-full bg-black/20 rounded-full h-2">
@@ -484,7 +490,9 @@ export default function ResumePage() {
               {/* Suggestions */}
               <Card className="p-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-                  <span className="mr-3 text-yellow-500">💡</span>
+                  <span className="mr-3 text-yellow-500">
+                    <FaRegLightbulb />
+                  </span>
                   Improvement Suggestions
                 </h2>
                 <div className="space-y-4">
@@ -514,7 +522,9 @@ export default function ResumePage() {
               {result.grammarFixes && (
                 <Card className="p-8">
                   <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-                    <span className="mr-3 text-blue-500">✨</span>
+                    <span className="mr-3 text-blue-500">
+                      <IoSparklesOutline />
+                    </span>
                     Polished Version
                   </h2>
                   <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 font-mono text-sm text-gray-700 leading-relaxed whitespace-pre-wrap max-h-[600px] overflow-y-auto shadow-inner">
