@@ -55,7 +55,13 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <div className="relative border-b border-gray-200 pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden">
+      <div
+      // style={{
+      //   backgroundImage: '/bg-image.png',
+      //   backgroundSize: "cover",
+      //   backgroundRepeat: "no-repeat"
+      // }}
+       className="relative border-b z-99 border-gray-200 pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center max-w-3xl mx-auto">
             <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 tracking-tight mb-8 leading-tight">
@@ -131,7 +137,7 @@ export default function Home() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-gray-200 border-t border-gray-100 py-12">
+      <footer className="bg-gray-100 border-t border-gray-100 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 md:mb-0">
             <span className="text-xl font-bold text-gray-900">ResumeAI</span>

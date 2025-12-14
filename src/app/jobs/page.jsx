@@ -9,6 +9,8 @@ import axiosInstance from "@/lib/axios";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
+import Modal from "@/components/ui/Modal";
+import ReactMarkdown from "react-markdown";
 
 export default function JobsPage() {
   const { user, loading } = useAuth();
@@ -18,6 +20,10 @@ export default function JobsPage() {
   const [error, setError] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [analyzingJobId, setAnalyzingJobId] = useState(null);
+  const [selectedAnalysis, setSelectedAnalysis] = useState(null);
+  const [showAnalysisModal, setShowAnalysisModal] = useState(false);
+  
   const [formData, setFormData] = useState({
     company: "",
     position: "",
@@ -54,19 +60,52 @@ export default function JobsPage() {
     }
   };
 
+  const analyzeJob = async (jobId, jobDescription) => {
+    try {
+      setAnalyzingJobId(jobId);
+      // Call AI analysis
+      const response = await axiosInstance.post("/api/resume/analyze-job", {
+        jobDescription,
+        jobId // Pass jobId to save results
+      });
+
+      // Update local jobs state with new analysis data
+      setJobs(prevJobs => prevJobs.map(job => 
+        job._id === jobId 
+          ? { ...job, ...response.data.data, compatibilityScore: response.data.data.matchScore } 
+          : job
+      ));
+
+    } catch (err) {
+      console.error("Analysis failed", err);
+      // Optional: Show error toast
+    } finally {
+      setAnalyzingJobId(null);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
     try {
+      let savedJob;
       if (editingId) {
-        await axiosInstance.put(`/api/jobs/${editingId}`, formData);
+        const res = await axiosInstance.put(`/api/jobs/${editingId}`, formData);
+        savedJob = res.data.data;
       } else {
-        await axiosInstance.post("/api/jobs", formData);
+        const res = await axiosInstance.post("/api/jobs", formData);
+        savedJob = res.data.data;
       }
 
       resetForm();
       fetchJobs();
+
+      // Trigger analysis if job description is present
+      if (formData.jobDescription && formData.jobDescription.length > 20) {
+        analyzeJob(savedJob._id, formData.jobDescription);
+      }
+
     } catch (err) {
       setError(err.response?.data?.message || "Failed to save job");
     }
@@ -147,6 +186,7 @@ export default function JobsPage() {
                 Track your job applications and interviews
               </p>
             </div>
+            <div className="flex gap-2">
             <Button
               onClick={() => setShowForm(!showForm)}
               size="lg"
@@ -154,7 +194,85 @@ export default function JobsPage() {
             >
               {showForm ? "Cancel" : "+ Add Job"}
             </Button>
+            </div>
           </div>
+
+          <Modal
+            isOpen={showAnalysisModal}
+            onClose={() => setShowAnalysisModal(false)}
+            title="AI Job Analysis"
+          >
+            {selectedAnalysis && (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between p-4 bg-blue-50 rounded-xl">
+                  <div>
+                    <p className="text-sm font-medium text-blue-600 mb-1">Compatibility Score</p>
+                    <p className="text-3xl font-bold text-blue-700">{selectedAnalysis.compatibilityScore}%</p>
+                  </div>
+                  <div className="h-16 w-16 rounded-full border-4 border-blue-200 flex items-center justify-center">
+                    <span className="text-xl font-bold text-blue-600">{selectedAnalysis.compatibilityScore}</span>
+                  </div>
+                </div>
+
+                {selectedAnalysis.analysis && (
+                  <div className="grid md:grid-cols-2 gap-4">
+                     <div className="p-4 bg-green-50 rounded-xl">
+                        <h4 className="font-bold text-green-800 mb-2">Matching Skills</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {selectedAnalysis.analysis.matchingSkills?.map((skill, i) => (
+                            <span key={i} className="px-2 py-1 bg-white text-green-700 text-xs rounded-md border border-green-200">
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                     </div>
+                     <div className="p-4 bg-red-50 rounded-xl">
+                        <h4 className="font-bold text-red-800 mb-2">Missing Skills</h4>
+                         <div className="flex flex-wrap gap-2">
+                          {selectedAnalysis.analysis.missingSkills?.map((skill, i) => (
+                            <span key={i} className="px-2 py-1 bg-white text-red-700 text-xs rounded-md border border-red-200">
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                     </div>
+                  </div>
+                )}
+
+                 {selectedAnalysis.analysis?.recommendations && (
+                  <div>
+                    <h4 className="font-bold text-gray-900 mb-2">Recommendations</h4>
+                    <ul className="list-disc list-inside space-y-1 text-gray-700">
+                      {selectedAnalysis.analysis.recommendations.map((rec, i) => (
+                        <li key={i}>{rec}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {selectedAnalysis.polishedResume && (
+                  <div className="mt-6 border-t pt-4">
+                    <div className="flex justify-between items-center mb-4">
+                       <h4 className="font-bold text-gray-900">Polished Resume</h4>
+                       <Button 
+                         variant="secondary" 
+                         size="sm"
+                         onClick={() => {
+                           navigator.clipboard.writeText(selectedAnalysis.polishedResume);
+                           alert("Copied to clipboard!");
+                         }}
+                       >
+                         Copy to Clipboard
+                       </Button>
+                    </div>
+                    <div className="bg-gray-50 p-4 rounded-xl border max-h-96 overflow-y-auto font-mono text-sm whitespace-pre-wrap">
+                      {selectedAnalysis.polishedResume}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </Modal>
 
           {/* Form */}
           {showForm && (
@@ -332,6 +450,9 @@ export default function JobsPage() {
                         Applied Date
                       </th>
                       <th className="px-6 py-5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                        Match
+                      </th>
+                      <th className="px-6 py-5 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
                         Notes
                       </th>
                       <th className="px-6 py-5 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">
@@ -368,6 +489,38 @@ export default function JobsPage() {
                           {job.appliedDate
                             ? new Date(job.appliedDate).toLocaleDateString()
                             : "N/A"}
+                        </td>
+                        <td className="px-6 py-5">
+                          {analyzingJobId === job._id ? (
+                            <span className="flex items-center text-blue-600 text-xs font-medium">
+                               <div className="w-3 h-3 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mr-2"></div>
+                               Analyzing...
+                            </span>
+                          ) : job.compatibilityScore ? (
+                             <button 
+                               onClick={() => {
+                                 setSelectedAnalysis(job);
+                                 setShowAnalysisModal(true);
+                               }}
+                               className="px-3 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-bold rounded-lg shadow-sm hover:shadow-md transition-all flex items-center gap-1"
+                             >
+                               {job.compatibilityScore}%
+                               <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                               </svg>
+                             </button>
+                          ) : (
+                            job.jobDescription ? (
+                               <button 
+                                 onClick={() => analyzeJob(job._id, job.jobDescription)}
+                                 className="text-xs text-blue-600 hover:text-blue-800 underline"
+                               >
+                                 Analyze
+                               </button>
+                            ) : (
+                               <span className="text-gray-400 text-xs">No Desc</span>
+                            )
+                          )}
                         </td>
                         <td className="px-6 py-5 text-sm text-gray-600 max-w-xs truncate">
                           {job.notes || (
