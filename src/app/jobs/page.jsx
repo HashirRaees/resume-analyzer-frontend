@@ -70,9 +70,19 @@ export default function JobsPage() {
       });
 
       // Update local jobs state with new analysis data
+      // Update local jobs state with new analysis data
       setJobs(prevJobs => prevJobs.map(job => 
         job._id === jobId 
-          ? { ...job, ...response.data.data, compatibilityScore: response.data.data.matchScore } 
+          ? { 
+              ...job, 
+              compatibilityScore: response.data.data.matchScore,
+              polishedResume: response.data.data.polishedResume,
+              analysis: {
+                matchingSkills: response.data.data.matchingSkills,
+                missingSkills: response.data.data.missingSkills,
+                recommendations: response.data.data.recommendations
+              }
+            } 
           : job
       ));
 
