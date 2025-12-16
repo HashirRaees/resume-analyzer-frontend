@@ -3,9 +3,10 @@
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { useEffect } from 'react';
-import { IoBriefcaseSharp,IoRocket  } from "react-icons/io5";
+import { IoRocket  } from "react-icons/io5";
 import { GrDocumentText } from "react-icons/gr";
 import { FaRegCalendarAlt,FaUser } from "react-icons/fa";
+import { LuBriefcaseBusiness } from "react-icons/lu";
 
 import Navbar from '@/components/Navbar';
 import Card from '@/components/ui/Card';
@@ -37,7 +38,7 @@ export default function DashboardPage() {
 
   const stats = [
     { label: 'Total Resumes', value: '0', icon: {GrDocumentText}, color: 'bg-blue-100 text-blue-600' },
-    { label: 'Jobs Tracked', value: '0', icon: {IoBriefcaseSharp}, color: 'bg-teal-100 text-teal-600' },
+    { label: 'Jobs Tracked', value: '0', icon: {LuBriefcaseBusiness}, color: 'bg-teal-100 text-teal-600' },
     { label: 'Interviews', value: '0', icon: {FaRegCalendarAlt}, color: 'bg-purple-100 text-purple-600' },
   ];
 
@@ -80,7 +81,7 @@ export default function DashboardPage() {
             <Card className="p-8 relative overflow-hidden border-1 group hover:shadow-2xl transition-all duration-300 border-0 ring-1 ring-gray-100">
               <div className="relative z-10">
                 <div className="w-14 h-14 bg-secondary/10 rounded-2xl flex items-center justify-center mb-6 text-3xl">
-                  <IoBriefcaseSharp/>
+                  <LuBriefcaseBusiness/>
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">Job Tracker</h3>
                 <p className="text-gray-500 mb-8 max-w-sm">
@@ -100,7 +101,7 @@ export default function DashboardPage() {
             <div className="lg:col-span-2">
               <Card className="p-8 h-full">
                 <h3 className="text-xl font-bold text-gray-900 mb-6">Getting Started Guide</h3>
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid md:grid-cols-2 gap-6">
                   <div className="flex items-start space-x-4 p-4 rounded-xl bg-gray-50 hover:bg-white hover:shadow-md transition-all border border-transparent hover:border-gray-100">
                     <div className="flex-shrink-0 w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold">1</div>
                     <div>

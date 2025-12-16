@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthContext";
-import { IoBriefcaseSharp } from "react-icons/io5";
+import { useAuth } from "@/context/AuthContext";;
+import { LuBriefcaseBusiness } from "react-icons/lu";
 import Navbar from "@/components/Navbar";
 import axiosInstance from "@/lib/axios";
 import Card from "@/components/ui/Card";
@@ -433,7 +433,7 @@ export default function JobsPage() {
             ) : jobs.length === 0 ? (
               <div className="p-16 text-center">
                 <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl">
-                  <IoBriefcaseSharp />
+                  <LuBriefcaseBusiness />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">
                   No jobs tracked yet

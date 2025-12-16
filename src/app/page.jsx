@@ -3,9 +3,9 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { IoBriefcaseSharp,IoRocket  } from "react-icons/io5";
+import { IoRocket  } from "react-icons/io5";
 import { GrDocumentText } from "react-icons/gr";
-
+import { LuBriefcaseBusiness } from "react-icons/lu";
 import Link from 'next/link';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
@@ -39,7 +39,7 @@ export default function Home() {
           <div className="flex justify-between h-16 items-center">
             <div className="flex-shrink-0 flex items-center">
               <span className="md:text-2xl text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                ResumeAI
+                ResumeMind
               </span>
             </div>
             <div className="flex items-center md:space-x-4">
@@ -61,11 +61,11 @@ export default function Home() {
       //   backgroundSize: "cover",
       //   backgroundRepeat: "no-repeat"
       // }}
-       className="relative border-b z-99 border-gray-200 pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden">
+       className="relative border-b border-gray-200 pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center max-w-3xl mx-auto">
-            <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 tracking-tight mb-8 leading-tight">
-              Craft the Perfect Resume with <span className="text-primary">AI Power</span>
+            <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 tracking-tight mb-8 leading-tight">
+              Craft the Perfect Resume with <br className='md:hidden block'/> <span className="text-primary">AI Power</span>
             </h1>
             <p className="md:text-xl text-gray-500 mb-10 leading-relaxed">
               Analyze your resume, track job applications, and land your dream job faster with our intelligent career assistant.
@@ -115,7 +115,7 @@ export default function Home() {
 
             <Card className="p-8 border">
               <div className="w-14 h-14 bg-teal-100 text-teal-600 rounded-2xl flex items-center justify-center text-3xl mb-6">
-                <IoBriefcaseSharp />
+                <LuBriefcaseBusiness />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">Job Tracker</h3>
               <p className="text-gray-500 leading-relaxed">
@@ -138,15 +138,15 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="bg-gray-100 border-t border-gray-100 py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+        <div className="max-w-7xl mx-auto text-center px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 md:mb-0">
-            <span className="text-xl font-bold text-gray-900">ResumeAI</span>
-            <p className="text-gray-500 text-sm mt-1">© 2024 ResumeAI. All rights reserved.</p>
+            <span className="text-xl font-bold text-gray-900">ResumeMind</span>
+            <p className="text-gray-500 text-sm mt-1">© 2025 ResumeMind. All rights reserved.</p>
           </div>
           <div className="flex space-x-6">
-            <a href="#" className="text-blue-400 hover:text-gray-600 transition-colors">Privacy Policy</a>
-            <a href="#" className="text-blue-400 hover:text-gray-600 transition-colors">Terms of Service</a>
-            <a href="#" className="text-blue-400 hover:text-gray-600 transition-colors">Contact</a>
+            <a href="#" className="text-blue-400 md:text-base text-sm hover:text-gray-600 transition-colors">Privacy Policy</a>
+            <a href="#" className="text-blue-400 md:text-base text-sm hover:text-gray-600 transition-colors">Terms of Service</a>
+            <a href="#" className="text-blue-400 md:text-base text-sm hover:text-gray-600 transition-colors">Contact</a>
           </div>
         </div>
       </footer>
